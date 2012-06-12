@@ -36,16 +36,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-Usage <a id="usage"></a>
--------------------------
+Usage <a name="usage"></a>
+---------------------------
 
 First load the plugin (*app/Config/bootstrap.php*):
     
     CakePlugin::load('ResourcesController');
 
 
-Sample Package XML <a id="samplexml"></a>
------------------------------------------
+Sample Package XML <a name="samplexml"></a>
+--------------------------------------------
 
     <?xml version="1.0"?>
     <package name="MyPackage" lang="js">
@@ -67,14 +67,14 @@ Sample Package XML <a id="samplexml"></a>
     ...
 
 
-Milestones <a id="future"></a>
-------------------------------
+Milestones <a name="future"></a>
+---------------------------------
 
 * Integrate LESS preprocessing
 * Use CakePHP native caching
 * Write full configuration options
 
-People <a id="people"></a>
---------------------------
+People <a name="people"></a>
+-----------------------------
 
 * Originally developed by Gideon Farrell [<me@gideonfarrell.co.uk>](mailto:me@gideonfarrell.co.uk)
