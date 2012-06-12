@@ -14,6 +14,7 @@
 class ResourcesController extends ResourcesControllerAppController {
 	var $layout = "blank";
 	var $uses = null;
+	var $components = array('DependencyCalculator');
 	
 	function beforeFilter() {
 		parent::beforeFilter();
