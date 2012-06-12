@@ -3,8 +3,16 @@ ResourcesController Plugin
 
 A *CakePHP* plugin designed to handle the modular packaging of resources such as CSS and Javascript files without having to do tedious building/processing beforehand.
 
-License
--------
+1. [License](#license)  
+2. [Usage](#usage)
+3. [Sample XML File](#samplexml)
+4. [Milestones](#future)
+5. [People](#people)
+
+
+
+License <a id="license"></a>
+----------------------------
 
 This software is licensed under the MIT X11 License (http://www.opensource.org/licenses/mit-license.php)
 
@@ -28,16 +36,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-Usage
------
+Usage <a id="usage"></a>
+-------------------------
 
 First load the plugin (*app/Config/bootstrap.php*):
     
     CakePlugin::load('ResourcesController');
 
 
-Sample Package XML
-------------------
+Sample Package XML <a id="samplexml"></a>
+-----------------------------------------
 
     <?xml version="1.0"?>
     <package name="MyPackage" lang="js">
@@ -59,9 +67,14 @@ Sample Package XML
     ...
 
 
-Milestones
-----------
+Milestones <a id="future"></a>
+------------------------------
 
 * Integrate LESS preprocessing
 * Use CakePHP native caching
 * Write full configuration options
+
+People <a id="people"></a>
+--------------------------
+
+* Originally developed by Gideon Farrell [<me@gideonfarrell.co.uk>](mailto:me@gideonfarrell.co.uk)
