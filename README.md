@@ -36,6 +36,28 @@ First load the plugin (*app/Config/bootstrap.php*):
     CakePlugin::load('ResourcesController');
 
 
+Sample Package XML
+------------------
+
+    <?xml version="1.0"?>
+    <package name="MyPackage" lang="js">
+    	<out>
+    		<file compression="true">mypackage.compressed.js</file>
+    		<file>mypackage.uncompressed.js</file>
+    	</out>
+    	<import>
+    		<file>OtherPackage:speciallib</file>
+    		<package>CoolLibrary</package>
+    	</import>
+    	<files>
+    		<file name="myscript">
+    			<requires>OtherPackage:otherscript</requires>
+    		</file>
+    		<file name="no_requirements" />
+    	</files>
+    </package>
+    ...
+
 
 Milestones
 ----------
