@@ -3,11 +3,11 @@ ResourcesController Plugin
 
 A *CakePHP* plugin designed to handle the modular packaging of resources such as CSS and Javascript files without having to do tedious building/processing beforehand.
 
-1. [License](#license)  
-2. [Usage](#usage)
-3. [Sample XML File](#samplexml)
-4. [Milestones](#future)
-5. [People](#people)
+1. [License](#license-)  
+2. [Usage](#usage-)
+3. [Sample XML File](#samplexmlfile-)
+4. [Milestones](#milestones-)
+5. [People](#people-)
 
 
 
@@ -36,7 +36,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-Usage <a name="usage"></a>
+Usage <a name="usage-"></a>
 ---------------------------
 
 First load the plugin (*app/Config/bootstrap.php*):
@@ -44,8 +44,8 @@ First load the plugin (*app/Config/bootstrap.php*):
     CakePlugin::load('ResourcesController');
 
 
-Sample Package XML <a name="samplexml"></a>
---------------------------------------------
+Sample XML File <a name="samplexmlfile-"></a>
+---------------------------------------------
 
     <?xml version="1.0"?>
     <package name="MyPackage" lang="js">
@@ -67,14 +67,14 @@ Sample Package XML <a name="samplexml"></a>
     ...
 
 
-Milestones <a name="future"></a>
----------------------------------
+Milestones <a name="milestones-"></a>
+-------------------------------------
 
 * Integrate LESS preprocessing
 * Use CakePHP native caching
 * Write full configuration options
 
-People <a name="people"></a>
------------------------------
+People <a name="people-"></a>
+------------------------------
 
 * Originally developed by Gideon Farrell [<me@gideonfarrell.co.uk>](mailto:me@gideonfarrell.co.uk)
