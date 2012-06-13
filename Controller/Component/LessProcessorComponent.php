@@ -27,7 +27,11 @@ class LessProcessorComponent extends CssProcessorComponent {
 	}
 
 	public function process($script_in, $compress=false) {
-		$script_out = $this->__lessc->parse($script_in);
+		try {
+			$script_out = $this->__lessc->parse($script_in);
+		} catch(Exception $e) {
+			throw new PreprocessFailureException(array('processor'=>'LessPHP'));
+		}
 
 		return $compress ? $this->compress($script_out) : $script_out;
 	}

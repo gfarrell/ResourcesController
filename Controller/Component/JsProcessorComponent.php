@@ -20,7 +20,11 @@ class JsProcessor extends Component implements iProcessor {
 	}
 
 	public function compress($script_in) {
-		$packer = new JavascriptPacker($script_in);
+		try {
+			$packer = new JavascriptPacker($script_in);
+		} catch(Exception $e) {
+			throw new PreprocessFailureException(array('processor'=>'JavascriptPacker'));
+		}
 		return $packer->pack();
 	}
 }
