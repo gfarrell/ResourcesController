@@ -29,6 +29,16 @@ class DependencyCalculator {
 	private $__list;
 
 	/**
+	 * Constructor
+	 * 
+	 * @param string $xml_input the XML describing the package as a string
+	 * @return void
+	 */
+	public function __construct($xml_input) {
+		$this->loadPackageDescription($xml_input);
+	}
+
+	/**
 	 * loadPackageDescription
 	 * Loads the XML describing the package.
 	 * 
@@ -38,6 +48,24 @@ class DependencyCalculator {
 	 */
 	public function loadPackageDescription($xml_input) {
 		$this->__xml = new SimpleXMLElement($xml_input);
+	}
+
+	/**
+	 * getLanguage
+	 * Gets the language of the specified package.
+	 * 
+	 * @access public
+	 * @param string $package_name the package for which we seek the langauge
+	 * @return string language of package
+	 */
+	public function getPackageLanguage($package_name) {
+		$package = $this->__xml->xpath('/package[@name = "'.$package_name.'"]');
+
+		if(!$package || $package->count() == 0) {
+			throw new MissingResourcePackageException(array('package'=>$package_name));		
+		}
+
+		return $package['lang'];
 	}
 
 	/**
