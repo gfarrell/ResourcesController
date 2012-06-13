@@ -46,6 +46,7 @@ class DependencyCalculator {
 	 * 
 	 * @access public
 	 * @param string $package_name the name of the package
+	 * @throws MissingResourcePackageException If package can't be found
 	 * @return array flattened dependency tree with no repetition
 	 */
 	public function computePackage($package_name) {
@@ -140,6 +141,8 @@ class DependencyCalculator {
 	 * Computes the dependencies for the given file in a particular package.
 	 * 
 	 * @access public
+	 * @throws MissingResourcePackageException If package can't be found
+	 * @throws MissingResourceFileException If file can't be found
 	 * @param string $package_name the name of the package
 	 * @param string $file_name the name of the file
 	 * @param SimpleXMLElement $description the XML node describing the file
