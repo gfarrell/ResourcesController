@@ -1,17 +1,17 @@
 <?php
 /*
 
-	Dependency Calculator Component
-	-------------------------------
+	Dependency Calculator
+	---------------------
 
-	@file 		DependencyCalculatorComponent.php
+	@file 		DependencyCalculator.php
 	@author 	Gideon Farrell <me@gideonfarrell.co.uk>
 
 	Copyright (c) 2012 Gideon Farrell <http://www.gideonfarrell.co.uk>
 
 */
 
-class DependencyCalculatorComponent extends Component {
+class DependencyCalculator {
 	/**
 	 * Contains the SimpleXML object that describes the packages.
 	 * 
