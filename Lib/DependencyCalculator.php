@@ -11,6 +11,8 @@
 
 */
 
+App::import('ResourcesController.Lib', 'exceptions');
+
 class DependencyCalculator {
 	/**
 	 * Contains the SimpleXML object that describes the packages.
@@ -58,7 +60,7 @@ class DependencyCalculator {
 
 
 		if(!$package or $package->count() == 0) {
-			throw new NotFoundException();
+			throw new MissingResourcePackageException(array('package'=>$package_name));
 		} else {
 			$package = $package[0];
 		}
@@ -147,14 +149,14 @@ class DependencyCalculator {
 		if(is_null($description)) {
 			$package = $this->__xml->xpath('/package[@name = "'.$package_name.'"]');
 			if(!$package) {
-				throw new NotFoundException();
+				throw new MissingResourcePackageException(array('package'=>$package_name));
 			} else {
 				$package = $package[0];
 			}
 
 			$description = $package->xpath('file[@name = "'.$file_name.'"]');
 			if(!$description) {
-				throw new NotFoundException();
+				throw new MissingResourceFileException(array('file'=>$file_name, 'package'=>$package_name));
 			} else {
 				$description = $description[0];
 			}
