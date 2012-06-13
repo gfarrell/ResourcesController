@@ -11,6 +11,8 @@
 
 */
 
+App::import('ResourcesController.Lib', 'exceptions');
+
 interface iPreprocessor {
 	/**
 	 * process
