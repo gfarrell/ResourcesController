@@ -22,3 +22,7 @@ class MissingResourcePackageException extends CakeException {
 class MissingResourceFileException extends CakeException {
 	protected $_messageTemplate = 'It seems that the file %s (in package %s) cannot be found.';
 }
+
+class PreprocessFailureException extends CakeException {
+	protected $_messageTemplate = 'The preprocessor (%s) has encountered an error.';
+}
