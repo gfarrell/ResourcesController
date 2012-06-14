@@ -5,8 +5,8 @@ A *CakePHP* plugin designed to handle the modular packaging of resources such as
 
 1. [License](#license-)  
 2. [Usage](#usage-)
-3. [Sample XML File](#samplexmlfile-)
-4. [Milestones](#milestones-)
+3. [Sample Config](#sampleconfig-)
+4. [Configuration File Documentation](#configurationfiledocumentation-)
 5. [People](#people-)
 
 
@@ -36,23 +36,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+
 Usage <a name="usage-"></a>
 ---------------------------
 
-First load the plugin (*app/Config/bootstrap.php*):
-    
+First you need to have a config file *ResourcesController.xml* in your app's *Config* directory. See the [Sample Config](#sampleconfig-) section to understand the format of this.
+
+Load the plugin in *app/Config/bootstrap.php*:
+   
     CakePlugin::load('ResourcesController');
+    
+The plugin defines custom routes so it is advised to also load its configuration files:
+
+	CakePlugin::load(array(
+		'ResourcesController' => array('routes'=>true)
+	));
+
+Then all you need to do is fetch resources using URLs like `http://myapp.dev/resources/package` or `http://myapp.dev/resources/package/file`. If you have not loaded the routes configuration, then you will have to use slightly messier URLs: `http://myapp.dev/resources_controller/resources/resources/package` and `http://myapp.dev/resources_controller/resources/resources/package/file`.
 
 
-Sample XML File <a name="samplexmlfile-"></a>
+Sample Config <a name="sampleconfig-"></a>
 ---------------------------------------------
 
     <?xml version="1.0"?>
-    <package name="MyPackage" lang="js">
-    	<out>
-    		<file compression="true">mypackage.compressed.js</file>
-    		<file>mypackage.uncompressed.js</file>
-    	</out>
+    <package name="MyPackage" lang="js" path="/app/webroot/js/mypackage" forcecompression="true">
     	<import>
     		<file>OtherPackage:speciallib</file>
     		<package>CoolLibrary</package>
@@ -67,12 +74,35 @@ Sample XML File <a name="samplexmlfile-"></a>
     ...
 
 
-Milestones <a name="milestones-"></a>
--------------------------------------
+Configuration File Documentation <a name="configurationfiledocumentation-"></a>
+-------------------------------------------------------------------------------
 
-* Integrate LESS preprocessing
-* Use CakePHP native caching
-* Write full configuration options
+### \<package\> *package definition*
+##### Required attributes:
+- *name* the package name
+- *lang* the package language (currently supported are 'js', 'css' and 'less')
+- *path* the path to the package files (from the *ROOT*)
+
+##### Optional attributes:
+- *forcecompression* whether or not to force file compression, default is false. If this is false, then both compressed and uncompressed versions can be requested from the plugin, whereas if it is true, then only compressed versions will be served.
+
+
+### \<import\> *defines imported files/packages*
+The import tag has no attributes, but contains either `<file>` tags or `<package>` tags.
+
+##### \<file\> *imported files*
+Should be formatted as `package:file`
+
+##### \<package\> *imported packages*
+Should just contain the package name.
+
+### \<files\> *the files in this package*
+Each `<file>` node **must have** a `name` attribute, which is the filename _without the extension_. The `lang` attribute of the package will be used as the file extension. A file can have requirements, either from external packages or from within the same package.
+
+##### \<requires\> *file requirements*
+There can be multiple `<requires>` nodes for each `<file>`. The requirement can either be a file from another package, in which case it should be formatted as `package:file` or from the same package, in which case it should just contain the file name (same as the `name` attribute for the relevant `<file>` node).
+
+
 
 People <a name="people-"></a>
 ------------------------------
