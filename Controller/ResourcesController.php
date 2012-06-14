@@ -94,7 +94,7 @@ class ResourcesController extends ResourcesControllerAppController {
 			$output = $this->__processFiles($files, $lang, $compress);
 		}
 
-
+		$this->__sendHeaders($lang);
 		$this->set('resources', $output);
 	}
 
@@ -214,6 +214,32 @@ class ResourcesController extends ResourcesControllerAppController {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * __sendHeaders
+	 * Sends the appropriate mime/headers for this language.
+	 * 
+	 * @access private
+	 * @param string $lang the language for which to send headers
+	 * @return void
+	 */
+	
+	private function __sendHeaders($lang) {
+		switch($lang) {
+			case 'js':
+				$ctype = 'text/javascript';
+				break;
+			case 'css':
+			case 'less':
+				$ctype = 'text/css';
+				break;
+			default:
+				$ctype = 'text/plain';
+		}
+
+		$this->response->header('Content-type', $ctype);
+		$this->response->compress();
 	}
 }
 ?>
