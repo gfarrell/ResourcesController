@@ -8,7 +8,7 @@ A *CakePHP* plugin designed to handle the modular packaging of resources such as
 3. [Sample Config](#sampleconfig-)
 4. [Configuration File Documentation](#configurationfiledocumentation-)
 5. [People](#people-)
-
+6. [Other Credits](#othercredits-)
 
 
 License <a id="license"></a>
@@ -108,3 +108,10 @@ People <a name="people-"></a>
 ------------------------------
 
 * Originally developed by Gideon Farrell [<me@gideonfarrell.co.uk>](mailto:me@gideonfarrell.co.uk)
+
+
+Other Credits <a name="othercredits-"></a>
+-------------------------------------
+
+* JavascriptPacker from [http://joliclic.free.fr/php/javascript-packer/en/](http://joliclic.free.fr/php/javascript-packer/en/)
+* LessPHP by leafo: [https://github.com/leafo/lessphp](https://github.com/leafo/lessphp)
