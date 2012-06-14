@@ -11,6 +11,9 @@
 
 */
 
+App::uses('File', 'Utility');
+App::uses('DependencyCalculator', 'ResourcesController.Lib');
+
 class ResourcesController extends ResourcesControllerAppController {
 	var $layout = 'ResourcesController.blank';
 	var $uses = null;
@@ -31,8 +34,142 @@ class ResourcesController extends ResourcesControllerAppController {
 	 * @param string $package the package to look in.
 	 * @param string $file [optional] the file to look for (if blank then do whole package)
 	 */
+	
 	function resource($package, $file=null) {
+		$depender = new DependencyCalculator();
+		$config = $this->__readConfig();
+		$xml = new SimpleXMLElement($config);
+		
+		$pkgxml = $xml->xpath('/package[@name="'.$package.'"]');
 
+		if(!$pkgxml || $pkgxml->count() == 0) {
+			throw new MissingResourcePackageException(array('package'=>$package));
+		} else {
+			$pkgxml = $pkgxml[0];
+		}
+
+		$lang = $pkgxml['lang'];
+		$path = $pkgxml['path'];
+
+		if(is_null($pkgxml['forcecompression'])) {
+			$pkgxml['forcecompression'] = false;
+		} else {
+			if($pkgxml['forcecompression'] == 'true') {
+				$pkgxml['forcecompression'] = true;
+			} else {
+				$pkgxml['forcecompression'] = false;
+			}
+
+		}
+
+		$compress = $pkgxml['forcecompression'] ? true : $this->request['compressed'];
+
+		$depender->loadPackageDescription($config);
+
+		$files = is_null($file) ? $depender->computePackage($package) : $depender->computeFile($package, $file);
+
+		$file_paths = $this->__getFileLocations($files);
+
+		// Cache
+		// Before caching or not, we will look for the configure key "ResourcesController.Cache". If this is false, we won't perform any caching.
+		
+		$output = '';
+
+		if(Configure::read('ResourcesController.Cache') !== false) {
+			$key = is_null($file) ? 'ResourcesController.Cache.'.$package : 'ResourcesController.Cache.'.$package.'.'.$file;
+
+			if($compress) { $key .= '.compressed'; }
+
+			$cache_born = Cache::read($key.'.Created');
+
+			$latest = $this->__getLatestModificationDate($file_paths);
+
+			if($cache_born < $latest) {
+				$output = $this->__processFiles($files, $lang, $compress);
+				Cache::write($key, $output);
+			} else {
+				$output = Cache::read($key);
+			}
+		} else {
+			$output = $this->__processFiles($files, $lang, $compress);
+		}
+
+
+		$this->set('resources', $output);
+	}
+
+	/**
+	 * __readConfig
+	 * 
+	 * @access private
+	 * @throws MissingResourceConfigurationException If config file can't be found
+	 * @return string configuration file contents
+	 */
+	
+	private function __readConfig() {
+		$file = new File(APP . DS . 'Config' . DS . 'ResourcesController.xml');
+
+		if(!$file->exists()) {
+			throw new MissingResourceConfigurationException();
+		}
+
+		return $file->contents();
+	}
+
+	/**
+	 * __getFileLocations
+	 * 
+	 * @access private
+	 * @throws MissingResourcePackageException If a package's config cannot be found
+	 * @param array $files a list of files in the package:file format
+	 * @param SimpleXMLElement $xml the xml config
+	 * @param string $ext the file extension (taken from the package language)
+	 * @return array file paths
+	 */
+	
+	private function __getFileLocations($files, SimpleXMLElement $xml, $ext) {
+		$package_paths = array();
+		$file_paths = array();
+
+		foreach($files as $file) {
+			list($pkg, $fl) = explode(':', $file);
+			if(!in_array($pkg, $package_paths)) {
+				$package = $xml->xpath('/package[@name="'.$pkg.'"]');
+
+				if(!$package || $package->count() == 0) {
+					throw new MissingResourcePackageException(array('package'=>$pkg));
+				}
+
+				$package_paths[$pkg] = $package[0]['path'];
+			}
+
+			$path = $package_paths[$pkg];
+
+			array_push($file_paths, $path . DS . $fl . '.' . $ext);
+		}
+
+		return $file_paths;
+	}
+
+	/**
+	 * __getLatestModificationDate
+	 * Returns the latest modification date of a list of files
+	 * 
+	 * @access private
+	 * @param array $files an array of file paths
+	 * @return int the latest modification time (as a unix timestamp)
+	 */
+	
+	private function __getLatestModificationDate($files) {
+		$d = 0;
+
+		foreach($files as $file) {
+			$df = filemtime(ROOT . DS . $file);
+
+			if($df > $d) $d = $df;
+		}
+
+		return $d;
 	}
 
 	/**
@@ -40,11 +177,43 @@ class ResourcesController extends ResourcesControllerAppController {
 	 * Reads the given files into a string.
 	 * 
 	 * @access private
-	 * @param array $list an array of files in the form package:file
+	 * @param array $files an array of file paths
 	 * @return string the output of all the files
 	 */
-	private function __readFiles($list) {
+	
+	private function __readFiles($files) {
+		$out = '';
 
+		foreach($files as $file) {
+			$f = new File(ROOT . DS . $file);
+			$out .= $f->contents();
+			$out .= " \n";
+		}
+
+		return $out;
+	}
+
+	/**
+	 * __processFiles
+	 * Processes the given files.
+	 * 
+	 * @access private
+	 * @param array $files the list of file paths to process
+	 * @param string $lang the language to process for
+	 * @param bool $compress whether or not to compress the output as well
+	 * @return string file processing output
+	 */
+	
+	private function __processFiles($files, $lang, $compress) {
+		$output = $this->__readFiles($files);
+
+		$processor = ucfirst($lang).'Processor';
+
+		if($this->Components->load('ResourcesController.'.$processor)) {
+			$output = $this->$processor->process($output, $compress);
+		}
+
+		return $output;
 	}
 }
 ?>
