@@ -51,24 +51,6 @@ class DependencyCalculator {
 	}
 
 	/**
-	 * getLanguage
-	 * Gets the language of the specified package.
-	 * 
-	 * @access public
-	 * @param string $package_name the package for which we seek the langauge
-	 * @return string language of package
-	 */
-	public function getPackageLanguage($package_name) {
-		$package = $this->__xml->xpath('/package[@name = "'.$package_name.'"]');
-
-		if(!$package || $package->count() == 0) {
-			throw new MissingResourcePackageException(array('package'=>$package_name));		
-		}
-
-		return $package['lang'];
-	}
-
-	/**
 	 * computePackage
 	 * Computes the dependencies for the given package.
 	 * 
