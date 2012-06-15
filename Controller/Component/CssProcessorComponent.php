@@ -11,9 +11,9 @@
 
 */
 
-App::uses('iProcessor', 'ResourcesController.Lib');
+App::uses('iPreprocessor', 'ResourcesController.Lib');
 
-class CssProcessorComponent extends Component implements iProcessor {
+class CssProcessorComponent extends Component implements iPreprocessor {
 	public function process($script_in, $compress=false) {
 		return $compress ? $this->compress($script_in) : $script_in;
 	}
