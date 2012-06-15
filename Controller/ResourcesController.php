@@ -35,14 +35,16 @@ class ResourcesController extends ResourcesControllerAppController {
 	 * @param string $file [optional] the file to look for (if blank then do whole package)
 	 */
 	
-	function resource($package, $file=null) {
-		$depender = new DependencyCalculator();
+	function resource() {
+		$package = $this->request['package'];
+		$file = $this->request['file'];
+
 		$config = $this->__readConfig();
 		$xml = new SimpleXMLElement($config);
 		
-		$pkgxml = $xml->xpath('/package[@name="'.$package.'"]');
+		$pkgxml = $xml->xpath('/packages/package[@name="'.$package.'"]');
 
-		if(!$pkgxml || $pkgxml->count() == 0) {
+		if(!$pkgxml || count($pkgxml) == 0) {
 			throw new MissingResourcePackageException(array('package'=>$package));
 		} else {
 			$pkgxml = $pkgxml[0];
@@ -64,11 +66,11 @@ class ResourcesController extends ResourcesControllerAppController {
 
 		$compress = $pkgxml['forcecompression'] ? true : $this->request['compressed'];
 
-		$depender->loadPackageDescription($config);
+		$depender = new DependencyCalculator($config);
 
 		$files = is_null($file) ? $depender->computePackage($package) : $depender->computeFile($package, $file);
 
-		$file_paths = $this->__getFileLocations($files);
+		$file_paths = $this->__getFileLocations($files, $xml, $pkgxml['lang']);
 
 		// Cache
 		// Before caching or not, we will look for the configure key "ResourcesController.Cache". If this is false, we won't perform any caching.
@@ -85,13 +87,13 @@ class ResourcesController extends ResourcesControllerAppController {
 			$latest = $this->__getLatestModificationDate($file_paths);
 
 			if($cache_born < $latest) {
-				$output = $this->__processFiles($files, $lang, $compress);
+				$output = $this->__processFiles($file_paths, $lang, $compress);
 				Cache::write($key, $output);
 			} else {
 				$output = Cache::read($key);
 			}
 		} else {
-			$output = $this->__processFiles($files, $lang, $compress);
+			$output = $this->__processFiles($file_paths, $lang, $compress);
 		}
 
 		$this->__sendHeaders($lang);
@@ -113,7 +115,7 @@ class ResourcesController extends ResourcesControllerAppController {
 			throw new MissingResourceConfigurationException();
 		}
 
-		return $file->contents();
+		return $file->read();
 	}
 
 	/**
@@ -133,14 +135,15 @@ class ResourcesController extends ResourcesControllerAppController {
 
 		foreach($files as $file) {
 			list($pkg, $fl) = explode(':', $file);
-			if(!in_array($pkg, $package_paths)) {
-				$package = $xml->xpath('/package[@name="'.$pkg.'"]');
 
-				if(!$package || $package->count() == 0) {
+			if(!in_array($pkg, $package_paths)) {
+				$package = $xml->xpath('/packages/package[@name="'.$pkg.'"]');
+
+				if(!$package || count($package) == 0) {
 					throw new MissingResourcePackageException(array('package'=>$pkg));
 				}
 
-				$package_paths[$pkg] = $package[0]['path'];
+				$package_paths[$pkg] = (string)$package[0]['path'];
 			}
 
 			$path = $package_paths[$pkg];
@@ -186,7 +189,7 @@ class ResourcesController extends ResourcesControllerAppController {
 
 		foreach($files as $file) {
 			$f = new File(ROOT . DS . $file);
-			$out .= $f->contents();
+			$out .= $f->read();
 			$out .= " \n";
 		}
 
@@ -208,8 +211,8 @@ class ResourcesController extends ResourcesControllerAppController {
 		$output = $this->__readFiles($files);
 
 		$processor = ucfirst($lang).'Processor';
-
-		if($this->Components->load('ResourcesController.'.$processor)) {
+		$this->$processor = $this->Components->load('ResourcesController.'.$processor);
+		if($this->$processor) {
 			$output = $this->$processor->process($output, $compress);
 		}
 
@@ -239,7 +242,7 @@ class ResourcesController extends ResourcesControllerAppController {
 		}
 
 		$this->response->header('Content-type', $ctype);
-		$this->response->compress();
+		//$this->response->compress();
 	}
 }
 ?>
