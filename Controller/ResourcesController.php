@@ -13,6 +13,7 @@
 
 App::uses('File', 'Utility');
 App::uses('DependencyCalculator', 'ResourcesController.Lib');
+App::uses('exceptions', 'ResourcesController.Lib');
 
 class ResourcesController extends ResourcesControllerAppController {
 	var $layout = 'ResourcesController.blank';
