@@ -13,12 +13,12 @@
 
 Router::connect(
 	'/resources/:package/:file/*',
-	array('controller'=>'ResourcesController.ResourcesController', 'action'=>'resources', 'compressed'=>true),
+	array('controller'=>'Resources', 'plugin'=>'ResourcesController', 'action'=>'resource', 'compressed'=>true),
 	array('package'=>'[A-Za-z0-9\-_\.]+', 'file'=>'[A-Za-z0-9\-_\.]+')
 );
 
 Router::connect(
 	'/resources/:package/*',
-	array('controller'=>'ResourcesController.ResourcesController', 'action'=>'resources', 'compressed'=>true),
+	array('controller'=>'Resources', 'plugin'=>'ResourcesController', 'action'=>'resource', 'compressed'=>true),
 	array('package'=>'[A-Za-z0-9\-_\.]+')
 );
