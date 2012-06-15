@@ -52,30 +52,35 @@ The plugin defines custom routes so it is advised to also load its configuration
 		'ResourcesController' => array('routes'=>true)
 	));
 
-Then all you need to do is fetch resources using URLs like `http://myapp.dev/resources/package` or `http://myapp.dev/resources/package/file`. If you have not loaded the routes configuration, then you will have to use slightly messier URLs: `http://myapp.dev/resources_controller/resources/resources/package` and `http://myapp.dev/resources_controller/resources/resources/package/file`.
+Then all you need to do is fetch resources using URLs like `http://myapp.dev/resources/package` or `http://myapp.dev/resources/package/file`. If you have not loaded the routes configuration, then you will have to use slightly messier URLs: `http://myapp.dev/resources_controller/resources/resource/package` and `http://myapp.dev/resources_controller/resources/resource/package/file`.
 
 
 Sample Config <a name="sampleconfig-"></a>
 ---------------------------------------------
 
     <?xml version="1.0"?>
-    <package name="MyPackage" lang="js" path="/app/webroot/js/mypackage" forcecompression="true">
-    	<import>
-    		<file>OtherPackage:speciallib</file>
-    		<package>CoolLibrary</package>
-    	</import>
-    	<files>
-    		<file name="myscript">
-    			<requires>OtherPackage:otherscript</requires>
-    		</file>
-    		<file name="no_requirements" />
-    	</files>
-    </package>
-    ...
+    <packages>
+	    <package name="MyPackage" lang="js" path="/app/webroot/js/mypackage" forcecompression="true">
+	    	<import>
+	    		<file>OtherPackage:speciallib</file>
+	    		<package>CoolLibrary</package>
+	    	</import>
+	    	<files>
+	    		<file name="myscript">
+	    			<requires>OtherPackage:otherscript</requires>
+	    		</file>
+	    		<file name="no_requirements" />
+	    	</files>
+	    </package>
+	    ...
+	</packages>
 
 
 Configuration File Documentation <a name="configurationfiledocumentation-"></a>
 -------------------------------------------------------------------------------
+
+### \<packages\> *root node*
+This root node is required.
 
 ### \<package\> *package definition*
 ##### Required attributes:
