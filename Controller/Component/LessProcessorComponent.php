@@ -1,10 +1,10 @@
 <?php
 /*
 
-	CssProcessorComponent - CSS Preprocessor
+	LessProcessorComponent - LESS Preprocessor
 	----------------------------------------------
 
-	@file 		CssProcessorComponent.php
+	@file 		LessProcessorComponent.php
 	@author 	Gideon Farrell <me@gideonfarrell.co.uk>
 
 	Copyright (c) 2012 Gideon Farrell <http://www.gideonfarrell.co.uk>
