@@ -11,7 +11,7 @@
 
 */
 
-App::import('ResourcesController.Lib', 'exceptions');
+App::uses('exceptions', 'ResourcesController.Lib');
 
 class DependencyCalculator {
 	/**
@@ -19,14 +19,14 @@ class DependencyCalculator {
 	 * 
 	 * @access private
 	 */
-	private $__xml;
+	private $_xml;
 
 	/**
 	 * Contains a temporary list of the current (flattened) dependency tree.
 	 * 
 	 * @access private
 	 */
-	private $__list;
+	private $_list;
 
 	/**
 	 * Constructor
@@ -47,7 +47,7 @@ class DependencyCalculator {
 	 * @return void
 	 */
 	public function loadPackageDescription($xml_input) {
-		$this->__xml = new SimpleXMLElement($xml_input);
+		$this->_xml = new SimpleXMLElement($xml_input);
 	}
 
 	/**
@@ -60,30 +60,32 @@ class DependencyCalculator {
 	 * @return array flattened dependency tree with no repetition
 	 */
 	public function computePackage($package_name) {
-		$package = $this->__xml->xpath('file[@name = "'.$package_name.'"]');
+		$package = $this->_xml->xpath('/packages/package[@name = "'.$package_name.'"]');
 		
 		// Initialise the file-list
 		$root = false;
-		if(!is_array($this->__list)) {
-			$this->__list = array();
+		if(!is_array($this->_list)) {
+			$this->_list = array();
 			$root = true;
 		}
 
 
-		if(!$package or $package->count() == 0) {
+		if(!$package or count($package) == 0) {
 			throw new MissingResourcePackageException(array('package'=>$package_name));
 		} else {
 			$package = $package[0];
 		}
 
 		// First let's look at the imports
-		$imports = $package->xpath('/imports');
+		$imports = $package->import;
 
-		if($imports && $imports->count() > 0) {
+		if($imports && count($imports) > 0) {
 			$imports = $imports->children();
+
 			foreach($imports as $import) {
+
 				if($import->getName() == 'package') {
-					$this->__list = array_merge($this->__list, $this->computePackage((string)$import));
+					$this->_list = array_merge($this->_list, $this->computePackage((string)$import));
 				} elseif($import->getName() == 'file') {
 					$import = (string)$import;
 
@@ -95,23 +97,23 @@ class DependencyCalculator {
 					}
 					
 					// Don't look at the file if its dependencies have already been computed (and thus it is in the list)
-					if(!in_array("$pkg:$fl", $this->__list)) {
-						$this->__list = array_merge($this->__list, $this->computeFile($pkg, $fl));
+					if(!in_array("$pkg:$fl", $this->_list)) {
+						$this->_list = array_merge($this->_list, $this->computeFile($pkg, $fl));
 					}
 				}
 			}
 		}
 
 		// Now let's look at the files in this package
-		$files = $package->xpath('/files');
-
-		if($files && $imports->count() > 0) {
+		$files = $package->files;
+		if($files && count($files) > 0) {
 			$files = $files->children();
+
 			foreach($files as $file) {
 				$file_name = $file['name'];
 				
-				if(!in_array("$package_name:$file_name", $this->__list)) {
-					if($file->count() > 0) {
+				if(!in_array("$package_name:$file_name", $this->_list)) {
+					if(count($file) > 0) {
 						$requires = $file->children();
 						foreach($requires as $required_file) {
 							if($required_file->getName() == 'requires') {
@@ -124,26 +126,27 @@ class DependencyCalculator {
 								}
 
 								if($fl == '*') {
-									$this->__list = array_merge($this->__list, $this->computePackage($pkg));
+									$this->_list = array_merge($this->_list, $this->computePackage($pkg));
 								} else {
-									if(!in_array($fl, $this->__list)) {
-										$this->__list = array_merge($this->__list, $this->computeFile($pkg, $fl));
+									if(!in_array($fl, $this->_list)) {
+										$this->_list = array_merge($this->_list, $this->computeFile($pkg, $fl));
 									}
 								}
 							}
 						}
 					}
-					array_push($this->__list, "$package_name:$file_name");
+					array_push($this->_list, "$package_name:$file_name");
 				}
 			}
 		}
-
+		
 		if($root) {
-			$this->__list = array();
-			return array_unique($this->_list);
+			$ls = $this->_list;
+			$this->_list = array();
+			return array_unique($ls);
 		}
 
-		return $this->__list;
+		return $this->_list;
 	}
 
 	/**
@@ -160,7 +163,7 @@ class DependencyCalculator {
 	 */
 	public function computeFile($package_name, $file_name, $description = null) {
 		if(is_null($description)) {
-			$package = $this->__xml->xpath('/package[@name = "'.$package_name.'"]');
+			$package = $this->_xml->xpath('/package[@name = "'.$package_name.'"]');
 			if(!$package) {
 				throw new MissingResourcePackageException(array('package'=>$package_name));
 			} else {
@@ -177,14 +180,14 @@ class DependencyCalculator {
 		
 		// Initialise the file-list
 		$root = false;
-		if(!is_array($this->__list)) {
-			$this->__list = array();
+		if(!is_array($this->_list)) {
+			$this->_list = array();
 			$root = true;
 		}
 
 		// Get file requirements
-		if(!in_array("$package_name:$file_name", $this->__list)) {
-			if($file->count() > 0) {
+		if(!in_array("$package_name:$file_name", $this->_list)) {
+			if(count($file) > 0) {
 				$requires = $file->children();
 				foreach($requires as $required_file) {
 					if($required_file->getName() == 'requires') {
@@ -197,25 +200,25 @@ class DependencyCalculator {
 						}
 
 						if($fl == '*') {
-							$this->__list = array_merge($this->__list, $this->computePackage($pkg));
+							$this->_list = array_merge($this->_list, $this->computePackage($pkg));
 						} else {
-							if(!in_array($fl, $this->__list)) {
-								$this->__list = array_merge($this->__list, $this->computeFile($pkg, $fl));
+							if(!in_array($fl, $this->_list)) {
+								$this->_list = array_merge($this->_list, $this->computeFile($pkg, $fl));
 							}
 						}
 					}
 				}
 			}
 
-			array_push($this->__list, "$package_name:$file_name");
+			array_push($this->_list, "$package_name:$file_name");
 		}
 
 		if($root) {
-			$this->__list = array();
+			$this->_list = array();
 			return array_unique($this->_list);
 		}
 
-		return $this->__list;
+		return $this->_list;
 	}
 }
 
