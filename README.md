@@ -54,6 +54,8 @@ The plugin defines custom routes so it is advised to also load its configuration
 
 Then all you need to do is fetch resources using URLs like `http://myapp.dev/resources/package` or `http://myapp.dev/resources/package/file`. If you have not loaded the routes configuration, then you will have to use slightly messier URLs: `http://myapp.dev/resources_controller/resources/resource/package` and `http://myapp.dev/resources_controller/resources/resource/package/file`.
 
+You can turn compression on or off (as long as forcecompression isn't set in the configuration) using `compressed:false` or `compressed:true` as the last parameter in the url, e.g. `http://myapp.dev/resources/package/compressed:false`.
+
 
 Sample Config <a name="sampleconfig-"></a>
 ---------------------------------------------
