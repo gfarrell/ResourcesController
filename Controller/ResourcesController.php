@@ -90,6 +90,7 @@ class ResourcesController extends ResourcesControllerAppController {
 			if($cache_born < $latest) {
 				$output = $this->__processFiles($file_paths, $lang, $compress);
 				Cache::write($key, $output);
+				Cache::write($key.'.Created', time());
 			} else {
 				$output = Cache::read($key);
 			}
