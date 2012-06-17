@@ -12,7 +12,7 @@
 */
 
 App::uses('CssProcessorComponent', 'ResourcesController.Component');
-App::import('ResourcesController.Vendor', 'LessPHP', array('file' => 'LessPHP' . DS . 'lessc.inc.php'));
+App::import('ResourcesController.Vendor', 'LessPHP/lessc');
 
 class LessProcessorComponent extends CssProcessorComponent {
 	/**
