@@ -55,17 +55,19 @@ class ResourcesController extends ResourcesControllerAppController {
 		$path = $pkgxml['path'];
 
 		if(is_null($pkgxml['forcecompression'])) {
-			$pkgxml['forcecompression'] = false;
+			$pkgxml['forcecompression'] = 'false';
 		} else {
 			if($pkgxml['forcecompression'] == 'true') {
-				$pkgxml['forcecompression'] = true;
+				$pkgxml['forcecompression'] = 'true';
 			} else {
-				$pkgxml['forcecompression'] = false;
+				$pkgxml['forcecompression'] = 'false';
 			}
-
 		}
 
-		$compress = $pkgxml['forcecompression'] ? true : $this->request['compressed'];
+		$compress_named = $this->request->named['compressed'];
+		$compress_named = $compress_named == 'false' ? false : true;
+
+		$compress = $pkgxml['forcecompression'] == 'true' ? true : $compress_named;
 
 		$depender = new DependencyCalculator($config);
 
