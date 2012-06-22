@@ -189,8 +189,8 @@ class DependencyCalculator {
 
 		// Get file requirements
 		if(!in_array("$package_name:$file_name", $this->_list)) {
-			if(count($file) > 0) {
-				$requires = $file->children();
+			if(count($description) > 0) {
+				$requires = $description->children();
 				foreach($requires as $required_file) {
 					if($required_file->getName() == 'requires') {
 						$req = (string)$required_file;
