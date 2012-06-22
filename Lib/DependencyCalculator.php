@@ -165,14 +165,14 @@ class DependencyCalculator {
 	 */
 	public function computeFile($package_name, $file_name, $description = null) {
 		if(is_null($description)) {
-			$package = $this->_xml->xpath('/package[@name = "'.$package_name.'"]');
+			$package = $this->_xml->xpath('/packages/package[@name = "'.$package_name.'"]');
 			if(!$package) {
 				throw new MissingResourcePackageException(array('package'=>$package_name));
 			} else {
 				$package = $package[0];
 			}
 
-			$description = $package->xpath('file[@name = "'.$file_name.'"]');
+			$description = $package->xpath('files/file[@name = "'.$file_name.'"]');
 			if(!$description) {
 				throw new MissingResourceFileException(array('file'=>$file_name, 'package'=>$package_name));
 			} else {
