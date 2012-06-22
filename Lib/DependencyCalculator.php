@@ -120,8 +120,8 @@ class DependencyCalculator {
 						foreach($requires as $required_file) {
 							if($required_file->getName() == 'requires') {
 								$req = (string)$required_file;
-								if(strpos($req, ':') >= 0) {
-									list($pkg, $fl) = explode($req);
+								if(strpos($req, ':')) {
+									list($pkg, $fl) = explode(':', $req, 2);
 								} else {
 									$pkg = $package_name;
 									$fl = $req;
