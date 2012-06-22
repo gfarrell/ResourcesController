@@ -11,7 +11,7 @@
 
 */
 
-App::uses('exceptions', 'ResourcesController.Lib');
+App::import('ResourcesController.Lib', 'exceptions');
 
 class DependencyCalculator {
 	/**
