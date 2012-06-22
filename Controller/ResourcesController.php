@@ -66,7 +66,7 @@ class ResourcesController extends ResourcesControllerAppController {
 			}
 		}
 
-		$compress_named = $this->request->named['compressed'];
+		$compress_named = isset($this->request->named['compressed']) ? $this->request->named['compressed'] : true;
 		$compress_named = $compress_named == 'false' ? false : true;
 
 		$compress = $pkgxml['forcecompression'] == 'true' ? true : $compress_named;
