@@ -88,10 +88,10 @@ class ResourcesController extends ResourcesControllerAppController {
 			if($compress) { $key .= '.compressed'; }
 
 			$cache_born = Cache::read($key.'.Created');
+			$latest_modification = $this->__getLatestModificationDate($file_paths);
+			$config_modification = $this->__getConfigMTime();
 
-			$latest = $this->__getLatestModificationDate($file_paths);
-
-			if($cache_born < $latest) {
+			if($cache_born < $latest_modification || $cache_born < $config_modification) {
 				$output = $this->__processFiles($file_paths, $lang, $compress);
 				Cache::write($key, $output);
 				Cache::write($key.'.Created', time());
@@ -122,6 +122,18 @@ class ResourcesController extends ResourcesControllerAppController {
 		}
 
 		return $file->read();
+	}
+
+	/**
+	 * __getConfigMTime
+	 * 
+	 * @access private
+	 * @throws MissingResourceConfigurationException If config file can't be found
+	 * @return int timestamp of config file's modification date
+	 */
+	
+	private function __getConfigMTime() {
+		return filemtime(APP . DS . 'Config' . DS . 'ResourcesController.xml');
 	}
 
 	/**
@@ -247,7 +259,7 @@ class ResourcesController extends ResourcesControllerAppController {
 				$ctype = 'text/plain';
 		}
 
-		$this->response->header('Content-type', $ctype);
+		$this->response->header('Content-Type', $ctype);
 		//$this->response->compress();
 	}
 }
