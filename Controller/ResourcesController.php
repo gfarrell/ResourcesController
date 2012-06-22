@@ -13,7 +13,9 @@
 
 App::uses('File', 'Utility');
 App::uses('DependencyCalculator', 'ResourcesController.Lib');
-App::import('ResourcesController.Lib', 'exceptions');
+if(!class_exists('MissingResourcePackageException')) {
+	App::import('ResourcesController.Lib', 'exceptions');
+}
 
 class ResourcesController extends ResourcesControllerAppController {
 	var $layout = 'ResourcesController.blank';

@@ -11,7 +11,9 @@
 
 */
 
-App::import('ResourcesController.Lib', 'exceptions');
+if(!class_exists('MissingResourcePackageException')) {
+	App::import('ResourcesController.Lib', 'exceptions');
+}
 
 class DependencyCalculator {
 	/**
