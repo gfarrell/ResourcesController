@@ -259,8 +259,7 @@ class ResourcesController extends ResourcesControllerAppController {
 				$ctype = 'text/plain';
 		}
 
-		$this->response->header('Content-Type', $ctype);
-		//$this->response->compress();
+		$this->response->type($ctype);
 	}
 }
 ?>
