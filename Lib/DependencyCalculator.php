@@ -216,8 +216,9 @@ class DependencyCalculator {
 		}
 
 		if($root) {
+			$ls = $this->_list;
 			$this->_list = array();
-			return array_unique($this->_list);
+			return array_unique($ls);
 		}
 
 		return $this->_list;
