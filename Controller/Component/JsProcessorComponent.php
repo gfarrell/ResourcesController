@@ -12,7 +12,7 @@
 */
 
 App::uses('iPreprocessor', 'ResourcesController.Lib');
-App::import('ResourcesController.Vendor', 'JavaScriptPacker/JavaScriptPacker');
+App::import('ResourcesController.Vendor', 'JSMin/JSMin');
 
 class JsProcessorComponent extends Component implements iPreprocessor {
 	public function process($script_in, $compress=false) {
@@ -21,10 +21,10 @@ class JsProcessorComponent extends Component implements iPreprocessor {
 
 	public function compress($script_in) {
 		try {
-			$packer = new JavaScriptPacker($script_in);
+			$out = JSMin::minify($script_in);
 		} catch(Exception $e) {
 			throw new PreprocessFailureException(array('processor'=>'JavaScriptPacker'));
 		}
-		return $packer->pack();
+		return $out;
 	}
 }
